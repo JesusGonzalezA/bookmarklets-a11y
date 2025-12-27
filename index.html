@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookmarklets para Accesibilidad</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      input { margin-bottom: 20px; padding: 8px; width: 100%; max-width: 300px; }
+      ul { list-style: none; padding: 0; }
+      li { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+      button { padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+      button:hover { background: #0056b3; }
+      .hidden { display: none; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Bookmarklets para Accesibilidad</h1>
+    </header>
+
+    <section>
+      <h2>Instrucciones para Añadir Bookmarklets</h2>
+      <p>Los bookmarklets son pequeños scripts de JavaScript que puedes guardar como marcadores en tu navegador para ejecutar funciones de accesibilidad en cualquier página web.</p>
+      <ol>
+        <li>Haz clic en el botón "Copiar" junto al bookmarklet que deseas.</li>
+        <li>Abre la barra de marcadores de tu navegador (generalmente Ctrl+Shift+B o Cmd+Shift+B).</li>
+        <li>Arrastra un enlace vacío desde la barra de marcadores a la barra de direcciones, o crea un nuevo marcador.</li>
+        <li>Pega el código copiado en el campo de URL del marcador.</li>
+        <li>Asigna un nombre al marcador y guárdalo.</li>
+        <li>Para usar, haz clic en el marcador mientras estás en una página web.</li>
+      </ol>
+    </section>
+
+    <section>
+      <label for="filter-input">Filtrar bookmarklets:</label>
+      <input id="filter-input" type="search" placeholder="Buscar por nombre o descripción..." aria-describedby="filter-help">
+      <span id="filter-help" class="sr-only">Escribe para filtrar la lista de bookmarklets por nombre o descripción.</span>
+    </section>
+
+    <section>
+      <h2>Lista de Bookmarklets</h2>
+      <div id="result-count" aria-live="polite" aria-atomic="true"></div>
+      <ul id="bookmarklet-list">
+        <!-- Los elementos se generarán dinámicamente con JavaScript -->
+      </ul>
+    </section>
+
+    <script>
+      const bookmarklets = [
+        { name: 'focus-order', desc: 'Verifica el orden de foco en la página para asegurar navegación accesible.' },
+        { name: 'heading-hierarchy', desc: 'Analiza la jerarquía de encabezados (H1-H6) para accesibilidad.' },
+        { name: 'images-no-alt', desc: 'Identifica imágenes sin texto alternativo (alt) que afectan la accesibilidad.' }
+      ];
+
+      const list = document.getElementById('bookmarklet-list');
+      const filterInput = document.getElementById('filter-input');
+
+      function updateResultCount() {
+        const count = list.children.length;
+        const resultCountDiv = document.getElementById('result-count');
+        resultCountDiv.textContent = `Mostrando ${count} resultado${count !== 1 ? 's' : ''}`;
+      }
+
+      function renderList(filter = '') {
+        list.innerHTML = '';
+        bookmarklets.forEach(bookmarklet => {
+          if (filter && !bookmarklet.name.toLowerCase().includes(filter.toLowerCase()) && !bookmarklet.desc.toLowerCase().includes(filter.toLowerCase())) {
+            return;
+          }
+          const li = document.createElement('li');
+          li.setAttribute('data-name', bookmarklet.name);
+          li.innerHTML = `
+            <h3>${bookmarklet.name.replace('-', ' ').toUpperCase()}</h3>
+            <p>${bookmarklet.desc}</p>
+            <button type="button" aria-label="Copiar código del bookmarklet ${bookmarklet.name}">Copiar</button>
+          `;
+          const button = li.querySelector('button');
+          button.addEventListener('click', () => {
+            fetch(`dist/${bookmarklet.name}.js`)
+              .then(response => response.text())
+              .then(code => {
+                navigator.clipboard.writeText(code).then(() => {
+                  alert('Código copiado al portapapeles.');
+                }).catch(err => {
+                  console.error('Error al copiar: ', err);
+                  alert('Error al copiar. Revisa la consola.');
+                });
+              })
+              .catch(err => {
+                console.error('Error al cargar el código: ', err);
+                alert('Error al cargar el código del bookmarklet.');
+              });
+          });
+          list.appendChild(li);
+        });
+        updateResultCount();
+      }
+
+      function debounce(func, delay) {
+        let timeoutId;
+        return function(...args) {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => func.apply(this, args), delay);
+        };
+      }
+
+      const debouncedRender = debounce((value) => renderList(value), 300);
+
+      renderList();
+
+      filterInput.addEventListener('input', (e) => {
+        debouncedRender(e.target.value);
+      });
+    </script>
+  </body>
+</html>
