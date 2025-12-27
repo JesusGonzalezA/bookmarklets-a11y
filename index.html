@@ -3,23 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
     <title>Bookmarklets para Accesibilidad</title>
     <style>
-      body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; margin: 20px auto; }
-      .search-container { padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; margin-bottom: 20px; }
-      .search-container label { display: block; margin-bottom: 8px; font-weight: bold; }
-      input { padding: 8px; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px; }
+      body { font-family: Verdana, sans-serif; margin: 1.25rem; max-width: 50rem; margin: 1.25rem auto; background: #1a1a1a; color: #ffffff; }
+      h1 { padding: 1rem; }
+      .search-container { padding: 1rem; border: 1px solid #333; border-radius: 0.5rem; background: #1e1e1e; margin-bottom: 1.25rem; margin-top: 1.25rem; }
+      .search-container label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #ffffff; }
+      input { padding: 0.5rem; width: 100%; max-width: 18.75rem; border: 1px solid #555; border-radius: 0.25rem; background: #2a2a2a; color: #ffffff; margin-bottom: 0.625rem; }
+      input::placeholder { color: #cccccc; }
       ul { list-style: none; padding: 0; }
-      li { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-      button { padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
-      button:hover { background: #0056b3; }
+      li { margin-bottom: 1.25rem; padding: 0.625rem; border: 1px solid #333; border-radius: 0.3125rem; background: #1e1e1e; }
+      button { padding: 0.5rem 0.75rem; background: #0066cc; color: white; border: 2px solid #004499; border-radius: 0.1875rem; cursor: pointer; }
+      button:hover { background: #004499; }
       .hidden { display: none; }
+      details { border: 1px solid #333; border-radius: 0.3125rem; padding: 0.625rem; background: #1e1e1e; margin-bottom: 1.25rem; }
+      summary { cursor: pointer; font-weight: bold; }
+    </style>
+    <style>
+      @media (max-width: 600px) {
+        body { padding: 1rem; }
+        .search-container { padding: 0.75rem; }
+        li { padding: 0.5rem; }
+        details { padding: 0.5rem; }
+      }
     </style>
   </head>
   <body>
     <header>
       <h1>Bookmarklets para Accesibilidad</h1>
     </header>
+
+    <main>
 
     <section>
       <details>
@@ -36,10 +51,10 @@
       </details>
     </section>
 
-    <section class="search-container" style="margin-top: 20px;">
+    <section class="search-container" style="margin-top: 1.25rem;">
       <label for="filter-input">Filtrar bookmarklets</label>
-      <input id="filter-input" type="search" placeholder="Buscar por nombre o descripción..." aria-describedby="filter-help"><br>
-      <span id="filter-help" class="sr-only" style="margin-top: 10px; display: block;">Escribe para filtrar la lista de bookmarklets por nombre o descripción.</span>
+        <input id="filter-input" type="search" placeholder="Buscar por nombre o descripción..." aria-describedby="filter-help" autocomplete="off">
+        <span id="filter-help" class="sr-only" style="display: block;">Escribe para filtrar la lista de bookmarklets por nombre o descripción.</span>
     </section>
 
     <section>
@@ -117,5 +132,6 @@
         debouncedRender(e.target.value);
       });
     </script>
-  </body>
+  </main>
+</body>
 </html>
