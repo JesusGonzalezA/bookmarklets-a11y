@@ -14,8 +14,10 @@
       input::placeholder { color: #cccccc; }
       ul { list-style: none; padding: 0; }
       li { margin-bottom: 1.25rem; padding: 0.625rem; border: 1px solid #333; border-radius: 0.3125rem; background: #1e1e1e; }
-      button { padding: 0.5rem 0.75rem; background: #0066cc; color: white; border: 2px solid #004499; border-radius: 0.1875rem; cursor: pointer; }
+      button { padding: 0.5rem 0.75rem; background: #0066cc; color: white; border: 2px solid #004499; border-radius: 0.1875rem; cursor: pointer; margin-right: 0.5rem; }
       button:hover { background: #004499; }
+      a { padding: 0.5rem 0.75rem; background: #28a745; color: white; text-decoration: none; border-radius: 0.1875rem; }
+      a:hover { background: #218838; }
       .hidden { display: none; }
       details { border: 1px solid #333; border-radius: 0.3125rem; padding: 0.625rem; background: #1e1e1e; margin-bottom: 1.25rem; }
       summary { cursor: pointer; font-weight: bold; }
@@ -92,7 +94,8 @@
           li.innerHTML = `
             <h3>${bookmarklet.name.replace('-', ' ').toUpperCase()}</h3>
             <p>${bookmarklet.desc}</p>
-            <button type="button" aria-label="Copiar código del bookmarklet ${bookmarklet.name}">Copiar</button>
+            <button type="button" aria-label="Copiar código del bookmarklet ${bookmarklet.name}">Copiar código</button>
+            <a href="#" id="install-${bookmarklet.name}" aria-label="Usar bookmarklet ${bookmarklet.name}">Usar</a>
           `;
           const button = li.querySelector('button');
           button.addEventListener('click', () => {
@@ -111,6 +114,17 @@
                 alert('Error al cargar el código del bookmarklet.');
               });
           });
+
+          // Set href for install link
+          fetch(`dist/${bookmarklet.name}.js`)
+            .then(response => response.text())
+            .then(code => {
+              document.getElementById(`install-${bookmarklet.name}`).href = code;
+            })
+            .catch(err => {
+              console.error('Error al cargar el código para instalar: ', err);
+            });
+
           list.appendChild(li);
         });
         updateResultCount();
