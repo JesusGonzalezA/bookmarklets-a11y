@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { execSync } from 'child_process'
 
-const srcDir = path.resolve('src')
+const srcDir = path.resolve('src', 'apps')
 
 const bookmarklets = fs
   .readdirSync(srcDir, { withFileTypes: true })

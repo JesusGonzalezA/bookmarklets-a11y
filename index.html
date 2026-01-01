@@ -6,19 +6,24 @@
     <meta name="color-scheme" content="dark" />
     <title>Bookmarklets para Accesibilidad</title>
     <style>
-      body { font-family: Verdana, sans-serif; margin: 1.25rem; max-width: 50rem; margin: 1.25rem auto; background: #1a1a1a; color: #ffffff; }
+      * { font-family: Verdana, sans-serif; background: #1a1a1a; color: #ffffff; }
+      body { padding: 1.25rem; max-width: 50rem; margin: 1.25rem auto; }
       h1 { padding: 1rem; }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+      
       .search-container { padding: 1rem; border: 1px solid #333; border-radius: 0.5rem; background: #1e1e1e; margin-bottom: 1.25rem; margin-top: 1.25rem; }
       .search-container label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #ffffff; }
       input { padding: 0.5rem; width: 100%; max-width: 18.75rem; border: 1px solid #555; border-radius: 0.25rem; background: #2a2a2a; color: #ffffff; margin-bottom: 0.625rem; }
       input::placeholder { color: #cccccc; }
-      ul { list-style: none; padding: 0; }
+
       li { margin-bottom: 1.25rem; padding: 0.625rem; border: 1px solid #333; border-radius: 0.3125rem; background: #1e1e1e; }
+      
+      .actions { display: flex; }
       button { padding: 0.5rem 0.75rem; background: #0066cc; color: white; border: 2px solid #004499; border-radius: 0.1875rem; cursor: pointer; margin-right: 0.5rem; }
       button:hover { background: #004499; }
-      a { padding: 0.5rem 0.75rem; background: #28a745; color: white; text-decoration: none; border-radius: 0.1875rem; }
+      a { padding: 0.5rem 0.75rem; background: #28a745; color: white; text-decoration: none; border: 2px solid #218838; border-radius: 0.1875rem; cursor: pointer; }
       a:hover { background: #218838; }
-      .hidden { display: none; }
+
       details { border: 1px solid #333; border-radius: 0.3125rem; padding: 0.625rem; background: #1e1e1e; margin-bottom: 1.25rem; }
       summary { cursor: pointer; font-weight: bold; }
     </style>
@@ -53,25 +58,23 @@
       </details>
     </section>
 
-    <section class="search-container" style="margin-top: 1.25rem;">
-      <label for="filter-input">Filtrar bookmarklets</label>
-        <input id="filter-input" type="search" placeholder="Buscar por nombre o descripción..." aria-describedby="filter-help" autocomplete="off">
-        <span id="filter-help" class="sr-only" style="display: block;">Escribe para filtrar la lista de bookmarklets por nombre o descripción.</span>
-    </section>
-
     <section>
       <h2>Lista de Bookmarklets</h2>
-      <div id="result-count" aria-live="polite" aria-atomic="true"></div>
-      <ul id="bookmarklet-list">
+
+      <label for="filter-input">Filtrar bookmarklets</label>
+      <input id="filter-input" type="search" placeholder="Buscar por nombre o descripción..." autocomplete="off">
+
+      <div id="result-count" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+      <ol id="bookmarklet-list">
         <!-- Los elementos se generarán dinámicamente con JavaScript -->
-      </ul>
+      </ol>
     </section>
 
     <script>
       const bookmarklets = [
-        { name: 'focus-order', desc: 'Verifica el orden de foco en la página para asegurar navegación accesible.' },
-        { name: 'heading-hierarchy', desc: 'Analiza la jerarquía de encabezados (H1-H6) para accesibilidad.' },
-        { name: 'images-no-alt', desc: 'Identifica imágenes sin texto alternativo (alt) que afectan la accesibilidad.' }
+        { name: 'a11y-tools', desc: 'Herramientas de accesibilidad en un mismo sitio' },
+        { name: 'reduced-motion', desc: 'Detecta si hay animaciones activas a pesar de utilizar preferencias de animaciones reducidas.'},
+        { name: 'autoplay-video', desc: 'Detecta si hay vídeos reproduciéndose.' }
       ];
 
       const list = document.getElementById('bookmarklet-list');
@@ -94,8 +97,10 @@
           li.innerHTML = `
             <h3>${bookmarklet.name.replace('-', ' ').toUpperCase()}</h3>
             <p>${bookmarklet.desc}</p>
-            <button type="button" aria-label="Copiar código del bookmarklet ${bookmarklet.name}">Copiar código</button>
-            <a href="#" id="install-${bookmarklet.name}" aria-label="Usar bookmarklet ${bookmarklet.name}">Usar</a>
+            <div class="actions">
+              <button type="button" aria-label="Copiar código del bookmarklet ${bookmarklet.name}">Copiar código</button>
+              <a href="#" id="install-${bookmarklet.name}" aria-label="Usar bookmarklet ${bookmarklet.name}">Usar</a>
+            </div>
           `;
           const button = li.querySelector('button');
           button.addEventListener('click', () => {

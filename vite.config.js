@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: false,
       minify: false,
       rollupOptions: {
-        input: resolve(__dirname, `src/${mode}/index.js`),
+        input: resolve(__dirname, `src/apps/${mode}/index.js`),
         output: {
           format: 'iife',
           name: 'bookmarklet',
