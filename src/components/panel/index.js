@@ -1,12 +1,11 @@
-import { GUI } from 'dat.gui';
+import { Pane } from 'tweakpane';
 
 class Panel {
     constructor() {
-        this._panel = new GUI();
-        this._panel.domElement.parentElement.style.zIndex = 999;
+        this._panel = new Pane();
     }
 
-    addFolder(title, detect, options) {
+    addFolder(title, detect) {
         const userOptions = {
             enable: false,
             interval: null,
@@ -14,44 +13,32 @@ class Panel {
             outlineColor: '#FF0000',
             useBorder: false
         };
-        options ??= {};
-        if (typeof options.isAvailable !== 'function') {
-            options.isAvailable = () => true;
-        }
 
-        const folder = this._panel.addFolder(title);
-
-        const enabledController = folder
-            .add(userOptions, 'enable');
+        const folder = this._panel.addFolder({ title });
         
         const handleChange = () => {
             if (userOptions.interval) clearInterval(userOptions.interval);
             if (userOptions.enable) 
                 userOptions.interval = setInterval(() => {
-                    if (!options.isAvailable()) {
-                        enabledController.setValue(false);
-                        alert(options.availableMsg ?? `${title} no disponible.`);
-                        return;
-                    }
                     detect(userOptions);
                 }, userOptions.detectionInterval);
         };
 
-        enabledController
-            .onChange(handleChange)
-            .listen();
+        folder
+            .addBinding(userOptions, 'enable')
+            .on('change', handleChange);
 
         folder
-            .add(userOptions, 'detectionInterval')
-            .onFinishChange(handleChange);
+            .addBinding(userOptions, 'detectionInterval')
+            .on('change', handleChange);
 
         folder
-            .addColor(userOptions, 'outlineColor')
-            .onChange(handleChange);
+            .addBinding(userOptions, 'outlineColor', { view: 'color' })
+            .on('change', handleChange);
 
         folder
-            .add(userOptions, 'useBorder')
-            .onChange(handleChange);
+            .addBinding(userOptions, 'useBorder')
+            .on('change', handleChange);
     }
 }
 

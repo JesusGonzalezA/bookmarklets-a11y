@@ -6,10 +6,10 @@ const detect = createDetector({
     getItems: () =>
         execute(({ document }) =>
             Array.from(document.querySelectorAll('video'))
-                .filter(video => !video.paused && video.currentTime > 0)
+                .filter(video => (!video.paused && video.currentTime > 0) || (!video.controls))
         ),
     label: 'Autoplay video',
-    emptyMessage: '✅ Autoplay video no detectó vídeos activos.'
+    emptyMessage: '✅ Autoplay video no detectó vídeos activos o sin controles.'
 });
 
 const init = () => {
